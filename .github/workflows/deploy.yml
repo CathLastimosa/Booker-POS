@@ -1,4 +1,4 @@
-name: Deploy to Booker POS to InfinityFree
+name: Deploy Booker POS
 
 on:
   push:
