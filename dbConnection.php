@@ -16,10 +16,10 @@ if (file_exists(__DIR__ . '/config.env.php')) {
 }
 
 // Use environment variables or fallback to defaults (for development)
-$servername = getenv('DB_HOST') ?: "127.0.0.1";
-$username = getenv('DB_USER') ?: "root";
-$password = getenv('DB_PASS') ?: "";
-$dbname = getenv('DB_NAME') ?: "bookerpos_final";
+$servername = getenv('DB_HOST');
+$username = getenv('DB_USER');
+$password = getenv('DB_PASS');
+$dbname = getenv('DB_NAME');
 
 // Enable error reporting only in development
 $isDevelopment = getenv('ENVIRONMENT') !== 'production';
