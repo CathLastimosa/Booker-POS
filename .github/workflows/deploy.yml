@@ -1,4 +1,4 @@
-name: Deploy Booker POS
+name: Deploy to Booker POS to InfinityFree
 
 on:
   push:
@@ -15,14 +15,16 @@ jobs:
 
       - name: Write production env config
         run: |
-         return [
-              'DB_HOST' => '${{ secrets.MYSQL_HOSTNAME }}',
-              'DB_USER' => '${{ secrets.MYSQL_USERNAME }}',
-              'DB_PASS' => '${{ secrets.MYSQL_PASSWORD }}',
-              'DB_NAME' => '${{ secrets.MYSQL_DATABASE_NAME }}',
-              'ENVIRONMENT' => 'production',
-          ];
-          EOF
+          printf '%s\n' \
+            '<?php' \
+            'return [' \
+            "    'DB_HOST' => '${{ secrets.MYSQL_HOSTNAME }}'," \
+            "    'DB_USER' => '${{ secrets.MYSQL_USERNAME }}'," \
+            "    'DB_PASS' => '${{ secrets.MYSQL_PASSWORD }}'," \
+            "    'DB_NAME' => '${{ secrets.MYSQL_DATABASE_NAME }}'," \
+            "    'ENVIRONMENT' => 'production'," \
+            '];' \
+            > config.env.php
 
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
