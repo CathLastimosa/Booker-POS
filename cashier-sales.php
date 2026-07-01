@@ -9,7 +9,7 @@ checkSessionTimeout();
 // Require login - Cashier or Admin can access
 requireLogin();
 if (!hasRole(['Cashier', 'Admin'])) {
-    header('Location: login.php?error=unauthorized');
+    header('Location: index.php?error=unauthorized');
     exit();
 }
 

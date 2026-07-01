@@ -24,5 +24,5 @@ if (ini_get("session.use_cookies")) {
 }
 session_destroy();
 
-header('Location: login.php?message=logged_out_successfully');
+header('Location: index.php?message=logged_out_successfully');
 exit();

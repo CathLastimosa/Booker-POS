@@ -51,7 +51,7 @@ This document outlines all security enhancements and code quality improvements m
 
 ## 3. LOGIN & SESSION MANAGEMENT
 
-### login.php Updates:
+### index.php Updates:
 
 - CSRF token validation on every login attempt
 - Rate limiting (5 attempts per 300 seconds)

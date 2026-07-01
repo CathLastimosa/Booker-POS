@@ -97,7 +97,7 @@ $csrf_token = generateCSRFToken();
             echo '<div class="feedback error-message">' . htmlspecialchars($error) . '</div>';
         }
         ?>
-        <form id="auth-form" method="POST" action="login.php">
+        <form id="auth-form" method="POST" action="index.php">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
             <input type="text" name="username" id="username" placeholder="Username" autocomplete="username">
             <input type="password" name="password" id="password" placeholder="Password" autocomplete="current-password">

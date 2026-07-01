@@ -13,7 +13,7 @@
 ### Modified Files (Security Enhanced) ✅
 
 - [x] `dbConnection.php` - Improved DB connection, error handling, auto table creation
-- [x] `login.php` - Added CSRF tokens, rate limiting, activity logging
+- [x] `index.php` - Added CSRF tokens, rate limiting, activity logging
 - [x] `logout.php` - Proper session cleanup, activity logging
 - [x] `dashboard-menu.php` - Added authorization checks
 - [x] `cashier-sales.php` - Added authorization checks
@@ -275,7 +275,7 @@ If issues occur, rollback to previous version:
 
 ```bash
 # Restore files from backup
-cp backup/login.php login.php
+cp backup/index.php index.php
 cp backup/payment.php payment.php
 # ... restore other files
 

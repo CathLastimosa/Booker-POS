@@ -15,7 +15,7 @@ function isLoggedIn()
 function requireLogin()
 {
     if (!isLoggedIn()) {
-        header('Location: login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+        header('Location: index.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
         exit();
     }
 }
@@ -42,7 +42,7 @@ function requireRole($requiredRole)
     requireLogin();
 
     if (!hasRole($requiredRole)) {
-        header('Location: login.php?error=unauthorized');
+        header('Location: index.php?error=unauthorized');
         exit();
     }
 }
@@ -190,7 +190,7 @@ function checkSessionTimeout()
 
     if (time() - $_SESSION['last_activity'] > $timeout) {
         session_destroy();
-        header('Location: login.php?error=session_expired');
+        header('Location: index.php?error=session_expired');
         exit();
     }
 
