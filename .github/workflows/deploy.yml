@@ -15,13 +15,13 @@ jobs:
 
       - name: Write production env config
         run: |
-          cat > config.env.php << 'EOF'
-          <?php
-          putenv('DB_HOST=${{ secrets.MYSQL_HOSTNAME }}');
-          putenv('DB_USER=${{ secrets.MYSQL_USERNAME }}');
-          putenv('DB_PASS=${{ secrets.MYSQL_PASSWORD }}');
-          putenv('DB_NAME=${{ secrets.MYSQL_DATABASE_NAME }}');
-          putenv('ENVIRONMENT=production');
+         return [
+              'DB_HOST' => '${{ secrets.MYSQL_HOSTNAME }}',
+              'DB_USER' => '${{ secrets.MYSQL_USERNAME }}',
+              'DB_PASS' => '${{ secrets.MYSQL_PASSWORD }}',
+              'DB_NAME' => '${{ secrets.MYSQL_DATABASE_NAME }}',
+              'ENVIRONMENT' => 'production',
+          ];
           EOF
 
       - name: Deploy via FTP

@@ -10,19 +10,27 @@
  * Locally on XAMPP, just omit that file and the defaults below apply.
  */
 
-// Load production/deployment overrides if present (gitignored file)
+// Set up error logging FIRST, before anything else can log
+if (!is_dir(__DIR__ . '/logs')) {
+    @mkdir(__DIR__ . '/logs', 0755, true);
+}
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/logs/errors.log');
+
+$envConfig = [];
 if (file_exists(__DIR__ . '/config.env.php')) {
-    require_once __DIR__ . '/config.env.php';
-    error_log("DEBUG: config.env.php loaded. DB_HOST=[" . getenv('DB_HOST') . "] DB_NAME=[" . getenv('DB_NAME') . "]");
+    $envConfig = require __DIR__ . '/config.env.php';
+    error_log("DEBUG: config.env.php loaded. DB_HOST=[" . ($envConfig['DB_HOST'] ?? '') . "] DB_NAME=[" . ($envConfig['DB_NAME'] ?? '') . "]");
 } else {
     error_log("DEBUG: config.env.php NOT FOUND at " . __DIR__);
 }
 
 // Use environment variables or fallback to defaults (for development)
-$servername = getenv('DB_HOST') ?: "127.0.0.1";
-$username = getenv('DB_USER') ?: "root";
-$password = getenv('DB_PASS') ?: "";
-$dbname = getenv('DB_NAME') ?: "bookerpos_final";
+$servername = $envConfig['DB_HOST'] ?? "127.0.0.1";
+$username   = $envConfig['DB_USER'] ?? "root";
+$password   = $envConfig['DB_PASS'] ?? "";
+$dbname     = $envConfig['DB_NAME'] ?? "bookerpos_final";
+$isDevelopment = ($envConfig['ENVIRONMENT'] ?? 'development') !== 'production';
 
 // Enable error reporting only in development
 $isDevelopment = getenv('ENVIRONMENT') !== 'production';
@@ -32,13 +40,6 @@ if ($isDevelopment) {
 } else {
     error_reporting(E_ALL);
     ini_set('display_errors', 0);
-    ini_set('log_errors', 1);
-    ini_set('error_log', __DIR__ . '/logs/errors.log');
-}
-
-// Create logs directory if it doesn't exist
-if (!is_dir(__DIR__ . '/logs')) {
-    @mkdir(__DIR__ . '/logs', 0755, true);
 }
 
 // Establish connection
@@ -93,9 +94,7 @@ function executeQuery($query, $params = [], $types = '')
 
 /**
  * Schema setup / migrations — only run once per deploy, not on every
- * request. We check for a marker file so repeated page loads (especially
- * on throttled shared hosting like InfinityFree) skip the SHOW COLUMNS /
- * CREATE TABLE overhead entirely after the first successful run.
+ * request.
  */
 $schemaMarker = __DIR__ . '/logs/.schema_initialized';
 
@@ -115,7 +114,6 @@ if (!file_exists($schemaMarker)) {
         )
     ");
 
-    // Migrate existing users table: add missing columns if they don't exist
     $checkIdColumn = $conn->query("SHOW COLUMNS FROM users LIKE 'id'");
     if ($checkIdColumn->num_rows == 0) {
         @$conn->query("ALTER TABLE users ADD COLUMN id INT AUTO_INCREMENT UNIQUE FIRST");
@@ -148,12 +146,6 @@ if (!file_exists($schemaMarker)) {
         )
     ");
 
-    /**
-     * Seed default admin account if it doesn't exist.
-     * Restricted to development only — on production (InfinityFree),
-     * create the admin account once manually via phpMyAdmin instead,
-     * so a known admin/admin123 login is never live on the internet.
-     */
     if ($isDevelopment) {
         $checkAdmin = $conn->query("SELECT COUNT(*) as count FROM users WHERE username = 'admin'");
         $adminResult = $checkAdmin->fetch_assoc();
@@ -178,6 +170,5 @@ if (!file_exists($schemaMarker)) {
         }
     }
 
-    // Mark schema as initialized so subsequent requests skip all of the above
     @file_put_contents($schemaMarker, date('Y-m-d H:i:s'));
 }
