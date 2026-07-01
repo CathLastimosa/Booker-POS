@@ -1,0 +1,30 @@
+# Disable directory listing
+Options -Indexes
+
+# Restrict access to sensitive files
+<FilesMatch "\.(env|config|db|sql|json)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Prevent direct access to sensitive PHP files
+<Files "auth.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Enable HTTPS
+# Uncomment after setting up SSL certificate
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} off
+#     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+# Set security headers
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
